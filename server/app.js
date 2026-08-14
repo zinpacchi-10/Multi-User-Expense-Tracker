@@ -17,5 +17,8 @@ app.use(express.static(path.join(__dirname, '../public')));
 app.get('/api/test', (req, res) => {
     res.json({ message: 'Backend is working!' });
 });
+// Routes
+const authRoutes = require('./routes/auth');
+app.use('/api/auth', authRoutes);
 
 module.exports = app;
