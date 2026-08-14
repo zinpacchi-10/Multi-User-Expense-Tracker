@@ -20,5 +20,8 @@ app.get('/api/test', (req, res) => {
 // Routes
 const authRoutes = require('./routes/auth');
 app.use('/api/auth', authRoutes);
+// Expense routes
+const expenseRoutes = require('./routes/expenses');
+app.use('/api/expenses', expenseRoutes);
 
 module.exports = app;
