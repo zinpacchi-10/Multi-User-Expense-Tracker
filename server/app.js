@@ -23,5 +23,8 @@ app.use('/api/auth', authRoutes);
 // Expense routes
 const expenseRoutes = require('./routes/expenses');
 app.use('/api/expenses', expenseRoutes);
+// Category routes
+const categoryRoutes = require('./routes/categories');
+app.use('/api/categories', categoryRoutes);
 
 module.exports = app;
