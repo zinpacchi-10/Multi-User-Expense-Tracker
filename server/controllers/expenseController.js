@@ -30,9 +30,12 @@ exports.addExpense = (req, res) => {
     const sql = `INSERT INTO expenses (amount, description, date, category_id, user_id) VALUES (?, ?, ?, ?, ?)`;
 
     db.query(sql, [amount, description || null, date, category_id || null, userId], (err, result) => {
-        if (err) return res.status(500).json({ message: 'Failed to add expense' });
-        res.status(201).json({ message: 'Expense added successfully', id: result.insertId });
-    });
+    if (err) {
+        console.log('Add Expense Error:', err);   // ← এই লাইনটা যোগ করো
+        return res.status(500).json({ message: 'Failed to add expense', error: err.message });
+    }
+    res.status(201).json({ message: 'Expense added successfully', id: result.insertId });
+});
 };
 
 // Update expense
