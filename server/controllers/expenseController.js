@@ -1,18 +1,43 @@
 const db = require('../config/db');
 
-// Get all expenses of logged-in user
+// Get all expenses of logged-in user (with Filter + Search)
 exports.getExpenses = (req, res) => {
     const userId = req.user.id;
+    const { startDate, endDate, category_id, search } = req.query;
 
-    const sql = `
+    let sql = `
         SELECT e.*, c.name AS category_name 
         FROM expenses e
         LEFT JOIN categories c ON e.category_id = c.id
         WHERE e.user_id = ?
-        ORDER BY e.date DESC
     `;
+    const params = [userId];
 
-    db.query(sql, [userId], (err, results) => {
+    // Date range filter
+    if (startDate) {
+        sql += ` AND e.date >= ?`;
+        params.push(startDate);
+    }
+    if (endDate) {
+        sql += ` AND e.date <= ?`;
+        params.push(endDate);
+    }
+
+    // Category filter
+    if (category_id) {
+        sql += ` AND e.category_id = ?`;
+        params.push(category_id);
+    }
+
+    // Search by description
+    if (search) {
+        sql += ` AND e.description LIKE ?`;
+        params.push(`%${search}%`);
+    }
+
+    sql += ` ORDER BY e.date DESC`;
+
+    db.query(sql, params, (err, results) => {
         if (err) return res.status(500).json({ message: 'Database error' });
         res.json(results);
     });

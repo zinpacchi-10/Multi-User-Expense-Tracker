@@ -27,4 +27,8 @@ app.use('/api/expenses', expenseRoutes);
 const categoryRoutes = require('./routes/categories');
 app.use('/api/categories', categoryRoutes);
 
+// Report routes
+const reportRoutes = require('./routes/reports');
+app.use('/api/reports', reportRoutes);
+
 module.exports = app;
