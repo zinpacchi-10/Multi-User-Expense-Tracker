@@ -29,18 +29,27 @@ async function loadCategories() {
         console.error(err);
     }
 }
-
-// Add Category
+//add Category
 document.getElementById('add-category-btn').addEventListener('click', async () => {
     const name = document.getElementById('new-category').value.trim();
-    if (!name) return alert('Please enter category name');
+
+    if (!name) {
+        alert('Category name is required');
+        return;
+    }
+
+    if (name.length < 2) {
+        alert('Category name must be at least 2 characters');
+        return;
+    }
 
     try {
         await apiRequest('/categories', 'POST', { name });
         document.getElementById('new-category').value = '';
         loadCategories();
+        alert('Category added successfully!');
     } catch (err) {
-        alert(err.message);
+        alert(err.message || 'Failed to add category');
     }
 });
 

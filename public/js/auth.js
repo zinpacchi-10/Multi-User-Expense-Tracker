@@ -33,31 +33,60 @@ toggleLink.addEventListener('click', (e) => {
 form.addEventListener('submit', async (e) => {
     e.preventDefault();
 
-    const email = document.getElementById('email').value;
-    const password = document.getElementById('password').value;
-    const name = document.getElementById('name').value;
+    const email = document.getElementById('email').value.trim();
+    const password = document.getElementById('password').value.trim();
+    const name = document.getElementById('name').value.trim();
+
+    // ========== VALIDATION ==========
+    if (!email || !password) {
+        message.style.color = 'red';
+        message.textContent = 'Email and password are required';
+        return;
+    }
+
+    if (!isLogin && !name) {
+        message.style.color = 'red';
+        message.textContent = 'Name is required';
+        return;
+    }
+
+    if (password.length < 4) {
+        message.style.color = 'red';
+        message.textContent = 'Password must be at least 4 characters';
+        return;
+    }
+    // ========== VALIDATION END ==========
 
     try {
         if (isLogin) {
+            // Login
             const data = await apiRequest('/auth/login', 'POST', { email, password });
             setToken(data.token);
             localStorage.setItem('user', JSON.stringify(data.user));
             window.location.href = 'dashboard.html';
         } else {
+            // Register
             await apiRequest('/auth/register', 'POST', { name, email, password });
             message.style.color = 'green';
             message.textContent = 'Registration successful! Please login.';
+            
+            // Automatically switch to Login mode
             isLogin = true;
             formTitle.textContent = 'Login';
             submitBtn.textContent = 'Login';
+            toggleMsg.textContent = "Don't have an account?";
+            toggleLink.textContent = 'Register';
             nameGroup.style.display = 'none';
+            
+            // Clear form
+            document.getElementById('name').value = '';
+            document.getElementById('password').value = '';
         }
     } catch (err) {
         message.style.color = 'red';
-        message.textContent = err.message;
+        message.textContent = err.message || 'Something went wrong';
     }
 });
-
 // Already logged in check
 if (getToken()) {
     window.location.href = 'dashboard.html';

@@ -62,11 +62,39 @@ async function loadExpenses(query = '') {
 document.getElementById('expense-form').addEventListener('submit', async (e) => {
     e.preventDefault();
 
+    const amount = document.getElementById('amount').value.trim();
+    const description = document.getElementById('description').value.trim();
+    const date = document.getElementById('date').value;
+    const category_id = document.getElementById('category').value || null;
+
+    // ========== VALIDATION ==========
+    if (!amount) {
+        alert('Amount is required');
+        return;
+    }
+
+    if (isNaN(amount)) {
+        alert('Amount must be a number');
+        return;
+    }
+
+    // যদি শুধু পজিটিভ চাও, তাহলে এই লাইন আনকমেন্ট করো
+    if (Number(amount) <= 0) {
+        alert('Amount must be greater than 0');
+        return;
+    }
+
+    if (!date) {
+        alert('Date is required');
+        return;
+    }
+    // VALIDATION END 
+
     const body = {
-        amount: document.getElementById('amount').value,
-        description: document.getElementById('description').value,
-        date: document.getElementById('date').value,
-        category_id: document.getElementById('category').value || null
+        amount: Number(amount),
+        description: description || null,
+        date,
+        category_id
     };
 
     try {
@@ -78,7 +106,7 @@ document.getElementById('expense-form').addEventListener('submit', async (e) => 
         loadSummary();
         loadChart();
     } catch (err) {
-        alert(err.message);
+        alert(err.message || 'Failed to add expense');
     }
 });
 
