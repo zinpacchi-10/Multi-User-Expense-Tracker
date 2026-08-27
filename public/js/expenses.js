@@ -40,7 +40,7 @@ async function loadExpenses(query = '') {
         expenses.forEach(exp => {
             const tr = document.createElement('tr');
             tr.innerHTML = `
-                <td>${exp.date}</td>
+                <td>${exp.date ? exp.date.split('T')[0] : '-'}</td>
                 <td>${exp.description || '-'}</td>
                 <td>${exp.category_name || 'Uncategorized'}</td>
                 <td>৳ ${Number(exp.amount).toLocaleString()}</td>
