@@ -1,4 +1,4 @@
-options: {
+const chartOptions = {
     responsive: true,
     maintainAspectRatio: true,
     animation: {
@@ -36,4 +36,4 @@ options: {
             }
         }
     }
-}
+};
