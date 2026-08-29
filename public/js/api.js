@@ -1,4 +1,4 @@
-const API_URL = 'https://multi-user-expense-tracker-production.up.railway.app/api';
+const API_URL = '/api';
 
 function getToken() {
     return localStorage.getItem('token');
