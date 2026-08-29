@@ -159,7 +159,7 @@ async function loadSummary() {
         const month = now.getMonth() + 1;
         const year = now.getFullYear();
         const monthData = await apiRequest(`/reports/total?month=${month}&year=${year}`);
-        document.getElementById('month-spent').textContent = `৳ ${Number(monthData.total || 0).toLocaleString()}`;
+        document.getElementById('month-spent').textContent = `$ ${Number(monthData.total || 0).toLocaleString()}`;
     } catch (err) {
         console.error(err);
     }
