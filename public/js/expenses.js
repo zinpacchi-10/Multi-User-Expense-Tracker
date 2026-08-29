@@ -153,7 +153,7 @@ document.getElementById('reset-btn').addEventListener('click', () => {
 async function loadSummary() {
     try {
         const total = await apiRequest('/reports/total');
-        document.getElementById('total-spent').textContent = `৳ ${Number(total.total || 0).toLocaleString()}`;
+        document.getElementById('total-spent').textContent = `$ ${Number(total.total || 0).toLocaleString()}`;
 
         const now = new Date();
         const month = now.getMonth() + 1;
@@ -214,7 +214,7 @@ async function loadChart(month = null, year = null) {
             data: {
                 labels: labels,
                 datasets: [{
-                    label: 'Amount (৳)',
+                    label: 'Amount ($)',
                     data: amounts,
                     backgroundColor: [
                         '#667eea', '#764ba2', '#f093fb', '#f5576c',
@@ -243,7 +243,7 @@ async function loadChart(month = null, year = null) {
                     tooltip: {
                         callbacks: {
                             label: function(context) {
-                                return '৳ ' + context.raw.toLocaleString();
+                                return '$ ' + context.raw.toLocaleString();
                             }
                         }
                     }
@@ -253,7 +253,7 @@ async function loadChart(month = null, year = null) {
                         beginAtZero: true,
                         ticks: {
                             callback: function(value) {
-                                return '৳ ' + value;
+                                return `$ ${value}`;
                             }
                         }
                     }

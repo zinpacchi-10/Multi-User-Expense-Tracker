@@ -21,7 +21,7 @@ const chartOptions = {
         tooltip: {
             callbacks: {
                 label: function(context) {
-                    return '৳ ' + context.raw.toLocaleString();
+                    return '$ ' + context.raw.toLocaleString();
                 }
             }
         }
@@ -31,7 +31,7 @@ const chartOptions = {
             beginAtZero: true,
             ticks: {
                 callback: function(value) {
-                    return '৳ ' + value;
+                    return '$ ' + value;
                 }
             }
         }

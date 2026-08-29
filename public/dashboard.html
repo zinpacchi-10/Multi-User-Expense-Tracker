@@ -37,8 +37,8 @@
     <div class="section">
         <h2>Expense by Category</h2>
     
-        <div class="filter-grid" style="margin-bottom: 20px;">
-        <select id="chart-month">
+        <div class="filter-grid chart-filter">
+        <select id="chart-month" title="Select month">
             <option value="1">January</option>
             <option value="2">February</option>
             <option value="3">March</option>
@@ -53,7 +53,7 @@
             <option value="12">December</option>
         </select>
 
-        <select id="chart-year">
+        <select id="chart-year" title="Select year">
             <option value="2024">2024</option>
             <option value="2025">2025</option>
             <option value="2026" selected>2026</option>
@@ -72,8 +72,8 @@
             <form id="expense-form" class="form-grid">
                 <input type="number" id="amount" placeholder="Amount" required>
                 <input type="text" id="description" placeholder="Description">
-                <input type="date" id="date" required>
-                <select id="category">
+                <input type="date" id="date" title="Select date" required>
+                <select id="category" title="Select category">
                     <option value="">Select Category</option>
                 </select>
                 <button type="submit">Add Expense</button>
@@ -84,9 +84,9 @@
         <div class="section">
             <h2>Filter Expenses</h2>
             <div class="filter-grid">
-                <input type="date" id="start-date">
-                <input type="date" id="end-date">
-                <select id="filter-category">
+                <input type="date" id="start-date" title="Select start date">
+                <input type="date" id="end-date" title="Select end date">
+                <select id="filter-category" title="Filter by category">
                     <option value="">All Categories</option>
                 </select>
                 <input type="text" id="search" placeholder="Search description...">
