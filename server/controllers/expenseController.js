@@ -9,45 +9,53 @@ exports.getExpenses = (req, res) => {
         SELECT e.*, c.name AS category_name 
         FROM expenses e
         LEFT JOIN categories c ON e.category_id = c.id
-        WHERE e.user_id = ?
+        WHERE e.user_id = $1
     `;
     const params = [userId];
+    let paramIndex = 2;
 
     // Date range filter
     if (startDate) {
-        sql += ` AND e.date >= ?`;
+        sql += ` AND e.date >= $${paramIndex}`;
         params.push(startDate);
+        paramIndex++;
     }
     if (endDate) {
-        sql += ` AND e.date <= ?`;
+        sql += ` AND e.date <= $${paramIndex}`;
         params.push(endDate);
+        paramIndex++;
     }
 
     // Category filter
     if (category_id) {
-        sql += ` AND e.category_id = ?`;
+        sql += ` AND e.category_id = $${paramIndex}`;
         params.push(category_id);
+        paramIndex++;
     }
 
     // Search by description
     if (search) {
-        sql += ` AND e.description LIKE ?`;
+        sql += ` AND e.description ILIKE $${paramIndex}`;
         params.push(`%${search}%`);
+        paramIndex++;
     }
 
     sql += ` ORDER BY e.date DESC`;
 
     db.query(sql, params, (err, results) => {
-        if (err) return res.status(500).json({ message: 'Database error' });
-        res.json(results);
+        if (err) {
+            console.log(err);
+            return res.status(500).json({ message: 'Database error' });
+        }
+        res.json(results.rows);
     });
 };
-// add Expense
+
+// Add Expense
 exports.addExpense = (req, res) => {
     const userId = req.user.id;
     const { amount, description, date, category_id } = req.body;
 
-    // Validation
     if (amount === undefined || amount === null || amount === '') {
         return res.status(400).json({ message: 'Amount is required' });
     }
@@ -60,14 +68,18 @@ exports.addExpense = (req, res) => {
         return res.status(400).json({ message: 'Date is required' });
     }
 
-    const sql = `INSERT INTO expenses (amount, description, date, category_id, user_id) VALUES (?, ?, ?, ?, ?)`;
+    const sql = `
+        INSERT INTO expenses (amount, description, date, category_id, user_id) 
+        VALUES ($1, $2, $3, $4, $5) 
+        RETURNING id
+    `;
 
     db.query(sql, [amount, description || null, date, category_id || null, userId], (err, result) => {
         if (err) {
             console.log('Add Expense Error:', err);
             return res.status(500).json({ message: 'Failed to add expense', error: err.message });
         }
-        res.status(201).json({ message: 'Expense added successfully', id: result.insertId });
+        res.status(201).json({ message: 'Expense added successfully', id: result.rows[0].id });
     });
 };
 
@@ -79,13 +91,13 @@ exports.updateExpense = (req, res) => {
 
     const sql = `
         UPDATE expenses 
-        SET amount = ?, description = ?, date = ?, category_id = ?
-        WHERE id = ? AND user_id = ?
+        SET amount = $1, description = $2, date = $3, category_id = $4
+        WHERE id = $5 AND user_id = $6
     `;
 
     db.query(sql, [amount, description, date, category_id, expenseId, userId], (err, result) => {
         if (err) return res.status(500).json({ message: 'Failed to update expense' });
-        if (result.affectedRows === 0) {
+        if (result.rowCount === 0) {
             return res.status(404).json({ message: 'Expense not found or not authorized' });
         }
         res.json({ message: 'Expense updated successfully' });
@@ -97,11 +109,11 @@ exports.deleteExpense = (req, res) => {
     const userId = req.user.id;
     const expenseId = req.params.id;
 
-    const sql = `DELETE FROM expenses WHERE id = ? AND user_id = ?`;
+    const sql = `DELETE FROM expenses WHERE id = $1 AND user_id = $2`;
 
     db.query(sql, [expenseId, userId], (err, result) => {
         if (err) return res.status(500).json({ message: 'Failed to delete expense' });
-        if (result.affectedRows === 0) {
+        if (result.rowCount === 0) {
             return res.status(404).json({ message: 'Expense not found or not authorized' });
         }
         res.json({ message: 'Expense deleted successfully' });
