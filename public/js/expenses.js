@@ -25,7 +25,7 @@ window.addEventListener('DOMContentLoaded', () => {
     loadChart();
 });
 
-// ========== EXPENSES ==========
+// EXPENSES
 async function loadExpenses(query = '') {
     try {
         const expenses = await apiRequest(`/expenses${query}`);
@@ -67,7 +67,7 @@ document.getElementById('expense-form').addEventListener('submit', async (e) => 
     const date = document.getElementById('date').value;
     const category_id = document.getElementById('category').value || null;
 
-    // ========== VALIDATION ==========
+    //VALIDATION
     if (!amount) {
         alert('Amount is required');
         return;
@@ -164,7 +164,7 @@ async function loadSummary() {
         console.error(err);
     }
 }
-// ========== CHART ==========
+//CHART
 let expenseChart = null;
 
 async function loadChart(month = null, year = null) {

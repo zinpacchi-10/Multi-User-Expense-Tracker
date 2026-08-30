@@ -9,24 +9,34 @@
 </head>
 <body>
     <!-- Navbar -->
-    <nav class="navbar">
-        <div class="logo">💰 Expense Tracker</div>
-        <div class="nav-right">
-            <span id="user-name">User</span>
-            <button id="logout-btn">Logout</button>
-        </div>
-    </nav>
+<div class="navbar">
+    <div class="logo">💰 Expense Tracker</div>
+
+    <div class="nav-right">
+        <!-- এখানে বসাও -->
+        <select id="currencySelect" title="Select currency">
+            <option value="৳">৳ BDT</option>
+            <option value="$">$ USD</option>
+            <option value="€">€ EUR</option>
+            <option value="£">£ GBP</option>
+            <option value="₹">₹ INR</option>
+        </select>
+
+        <span id="userName">MD. AL AMIN</span>
+        <button id="logoutBtn">Logout</button>
+    </div>
+</div>
 
     <div class="container">
         <!-- Summary Cards -->
         <div class="summary-cards">
             <div class="card">
                 <h3>Total Spent</h3>
-                <p id="total-spent">৳ 0</p>
+                <p id="total-spent">$ 0</p>
             </div>
             <div class="card">
                 <h3>This Month</h3>
-                <p id="month-spent">৳ 0</p>
+                <p id="month-spent">$ 0</p>
             </div>
             <div class="card">
                 <h3>Total Expenses</h3>
