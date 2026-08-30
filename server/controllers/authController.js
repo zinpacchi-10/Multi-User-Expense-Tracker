@@ -1,4 +1,4 @@
-//Auth Controller
+// Auth Controller
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const db = require('../config/db');
@@ -12,10 +12,13 @@ exports.register = (req, res) => {
     }
 
     // Check if email already exists
-    db.query('SELECT * FROM users WHERE email = ?', [email], async (err, results) => {
-        if (err) return res.status(500).json({ message: 'Database error' });
+    db.query('SELECT * FROM users WHERE email = $1', [email], async (err, results) => {
+        if (err) {
+            console.log(err);
+            return res.status(500).json({ message: 'Database error' });
+        }
 
-        if (results.length > 0) {
+        if (results.rows.length > 0) {
             return res.status(400).json({ message: 'Email already registered' });
         }
 
@@ -24,10 +27,13 @@ exports.register = (req, res) => {
 
         // Insert user
         db.query(
-            'INSERT INTO users (name, email, password_hash) VALUES (?, ?, ?)',
+            'INSERT INTO users (name, email, password_hash) VALUES ($1, $2, $3) RETURNING id',
             [name, email, hashedPassword],
             (err, result) => {
-                if (err) return res.status(500).json({ message: 'Registration failed' });
+                if (err) {
+                    console.log(err);
+                    return res.status(500).json({ message: 'Registration failed' });
+                }
 
                 res.status(201).json({ message: 'User registered successfully' });
             }
@@ -43,14 +49,17 @@ exports.login = (req, res) => {
         return res.status(400).json({ message: 'Email and password are required' });
     }
 
-    db.query('SELECT * FROM users WHERE email = ?', [email], async (err, results) => {
-        if (err) return res.status(500).json({ message: 'Database error' });
+    db.query('SELECT * FROM users WHERE email = $1', [email], async (err, results) => {
+        if (err) {
+            console.log(err);
+            return res.status(500).json({ message: 'Database error' });
+        }
 
-        if (results.length === 0) {
+        if (results.rows.length === 0) {
             return res.status(400).json({ message: 'Invalid email or password' });
         }
 
-        const user = results[0];
+        const user = results.rows[0];
         const isMatch = await bcrypt.compare(password, user.password_hash);
 
         if (!isMatch) {
