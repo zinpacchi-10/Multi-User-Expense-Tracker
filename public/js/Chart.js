@@ -7,33 +7,22 @@ const chartOptions = {
         animateScale: true,      // স্কেল অ্যানিমেশন
         animateRotate: true      // রোটেট অ্যানিমেশন (pie/doughnut এর জন্য ভালো)
     },
-    plugins: {
-        legend: {
-            display: false
-        },
-        title: {
-            display: true,
-            text: `Expenses - ${getMonthName(selectedMonth)} ${selectedYear}`,
-            font: {
-                size: 16
-            }
-        },
-        tooltip: {
-            callbacks: {
-                label: function(context) {
-                    return '$ ' + context.raw.toLocaleString();
-                }
-            }
-        }
-    },
     scales: {
-        y: {
-            beginAtZero: true,
-            ticks: {
-                callback: function(value) {
-                    return '$ ' + value;
-                }
+    y: {
+        ticks: {
+            callback: function(value) {
+                return getCurrency() + ' ' + value;
             }
         }
     }
+},
+plugins: {
+    tooltip: {
+        callbacks: {
+            label: function(context) {
+                return getCurrency() + ' ' + context.raw;
+            }
+        }
+    }
+}
 };
