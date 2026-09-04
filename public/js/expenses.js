@@ -1,3 +1,23 @@
+//Currency Helper
+function getCurrency() {
+    return localStorage.getItem('currency') || '৳';
+}
+
+function formatMoney(amount) {
+    return getCurrency() + ' ' + Number(amount || 0).toLocaleString();
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    const select = document.getElementById('currencySelect');
+    if (select) {
+        select.value = getCurrency();
+        select.addEventListener('change', () => {
+            localStorage.setItem('currency', select.value);
+            location.reload();
+        });
+    }
+});
+
 // Check if logged in
 if (!getToken()) {
     window.location.href = 'index.html';
@@ -5,17 +25,26 @@ if (!getToken()) {
 
 // Show user name
 const user = JSON.parse(localStorage.getItem('user') || '{}');
-document.getElementById('user-name').textContent = user.name || 'User';
+const userNameEl = document.getElementById('userName');
+if (userNameEl) {
+    userNameEl.textContent = user.name || 'User';
+}
 
 // Logout
-document.getElementById('logout-btn').addEventListener('click', () => {
-    removeToken();
-    localStorage.removeItem('user');
-    window.location.href = 'index.html';
-});
+const logoutBtn = document.getElementById('logoutBtn');
+if (logoutBtn) {
+    logoutBtn.addEventListener('click', () => {
+        removeToken();
+        localStorage.removeItem('user');
+        window.location.href = 'index.html';
+    });
+}
 
 // Set today's date as default
-document.getElementById('date').valueAsDate = new Date();
+const dateInput = document.getElementById('date');
+if (dateInput) {
+    dateInput.valueAsDate = new Date();
+}
 
 // Load everything on page load
 window.addEventListener('DOMContentLoaded', () => {
@@ -34,6 +63,7 @@ async function loadExpenses(query = '') {
 
         if (expenses.length === 0) {
             tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;">No expenses found</td></tr>';
+            document.getElementById('total-count').textContent = '0';
             return;
         }
 
@@ -43,7 +73,7 @@ async function loadExpenses(query = '') {
                 <td>${exp.date ? exp.date.split('T')[0] : '-'}</td>
                 <td>${exp.description || '-'}</td>
                 <td>${exp.category_name || 'Uncategorized'}</td>
-                <td>৳ ${Number(exp.amount).toLocaleString()}</td>
+                <td>${formatMoney(exp.amount)}</td>
                 <td>
                     <button class="delete-btn" onclick="deleteExpense(${exp.id})">Delete</button>
                 </td>
@@ -67,7 +97,6 @@ document.getElementById('expense-form').addEventListener('submit', async (e) => 
     const date = document.getElementById('date').value;
     const category_id = document.getElementById('category').value || null;
 
-    //VALIDATION
     if (!amount) {
         alert('Amount is required');
         return;
@@ -78,7 +107,6 @@ document.getElementById('expense-form').addEventListener('submit', async (e) => 
         return;
     }
 
-    // যদি শুধু পজিটিভ চাও, তাহলে এই লাইন আনকমেন্ট করো
     if (Number(amount) <= 0) {
         alert('Amount must be greater than 0');
         return;
@@ -88,7 +116,6 @@ document.getElementById('expense-form').addEventListener('submit', async (e) => 
         alert('Date is required');
         return;
     }
-    // VALIDATION END 
 
     const body = {
         amount: Number(amount),
@@ -135,7 +162,7 @@ document.getElementById('filter-btn').addEventListener('click', () => {
     if (start) query += `startDate=${start}&`;
     if (end) query += `endDate=${end}&`;
     if (category) query += `category_id=${category}&`;
-    if (search) query += `search=${search}&`;
+    if (search) query += `search=${encodeURIComponent(search)}&`;
 
     loadExpenses(query);
 });
@@ -153,18 +180,19 @@ document.getElementById('reset-btn').addEventListener('click', () => {
 async function loadSummary() {
     try {
         const total = await apiRequest('/reports/total');
-        document.getElementById('total-spent').textContent = `$ ${Number(total.total || 0).toLocaleString()}`;
+        document.getElementById('total-spent').textContent = formatMoney(total.total || 0);
 
         const now = new Date();
         const month = now.getMonth() + 1;
         const year = now.getFullYear();
         const monthData = await apiRequest(`/reports/total?month=${month}&year=${year}`);
-        document.getElementById('month-spent').textContent = `$ ${Number(monthData.total || 0).toLocaleString()}`;
+        document.getElementById('month-spent').textContent = formatMoney(monthData.total || 0);
     } catch (err) {
         console.error(err);
     }
 }
-//CHART
+
+// CHART
 let expenseChart = null;
 
 async function loadChart(month = null, year = null) {
@@ -173,7 +201,6 @@ async function loadChart(month = null, year = null) {
         const selectedMonth = month || (now.getMonth() + 1);
         const selectedYear = year || now.getFullYear();
 
-        // Dropdown সিঙ্ক করো
         const monthSelect = document.getElementById('chart-month');
         const yearSelect = document.getElementById('chart-year');
         if (monthSelect) monthSelect.value = selectedMonth;
@@ -190,7 +217,6 @@ async function loadChart(month = null, year = null) {
                 amounts.push(Number(item.total_amount) || 0);
             });
         } else {
-            // ডেটা না থাকলে
             labels.push('No Data');
             amounts.push(0);
         }
@@ -203,18 +229,19 @@ async function loadChart(month = null, year = null) {
 
         const ctx = canvas.getContext('2d');
 
-        // পুরনো চার্ট ধ্বংস করো
         if (expenseChart) {
             expenseChart.destroy();
             expenseChart = null;
         }
+
+        const currency = getCurrency();
 
         expenseChart = new Chart(ctx, {
             type: 'bar',
             data: {
                 labels: labels,
                 datasets: [{
-                    label: 'Amount ($)',
+                    label: 'Amount (' + currency + ')',
                     data: amounts,
                     backgroundColor: [
                         '#667eea', '#764ba2', '#f093fb', '#f5576c',
@@ -243,7 +270,7 @@ async function loadChart(month = null, year = null) {
                     tooltip: {
                         callbacks: {
                             label: function(context) {
-                                return '$ ' + context.raw.toLocaleString();
+                                return formatMoney(context.raw);
                             }
                         }
                     }
@@ -253,7 +280,7 @@ async function loadChart(month = null, year = null) {
                         beginAtZero: true,
                         ticks: {
                             callback: function(value) {
-                                return `$ ${value}`;
+                                return currency + ' ' + value;
                             }
                         }
                     }
