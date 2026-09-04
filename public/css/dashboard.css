@@ -195,3 +195,19 @@ tr:hover {
     padding: 10px 0;
     border-bottom: 1px solid #eee;
 }
+#currencySelect {
+    padding: 6px 10px;
+    border-radius: 6px;
+    border: none;
+    margin-right: 12px;
+    cursor: pointer;
+    font-size: 14px;
+    background: white;
+    color: #333;
+}
+
+.nav-right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
