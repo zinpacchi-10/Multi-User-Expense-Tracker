@@ -1,9 +1,11 @@
 const { Pool } = require('pg');
 require('dotenv').config();
 
+const isLocal = !process.env.DATABASE_URL || process.env.DATABASE_URL.includes('localhost');
+
 const pool = new Pool({
     connectionString: process.env.DATABASE_URL,
-    ssl: process.env.DATABASE_URL?.includes('localhost') ? false : { rejectUnauthorized: false }
+    ssl: isLocal ? false : { rejectUnauthorized: false }
 });
 
 pool.query('SELECT NOW()', (err) => {
