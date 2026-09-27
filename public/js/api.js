@@ -1,42 +1,42 @@
-const API_URL = '/api';
+const API_URL = 'http://127.0.0.1:5000/api';
 
 function getToken() {
-    return localStorage.getItem('token');
+  return localStorage.getItem('token');
 }
 
 function setToken(token) {
-    localStorage.setItem('token', token);
+  localStorage.setItem('token', token);
 }
 
 function removeToken() {
-    localStorage.removeItem('token');
+  localStorage.removeItem('token');
 }
 
 async function apiRequest(endpoint, method = 'GET', body = null) {
-    const headers = {
-        'Content-Type': 'application/json'
-    };
+  const headers = {
+    'Content-Type': 'application/json',
+  };
 
-    const token = getToken();
-    if (token) {
-        headers['Authorization'] = `Bearer ${token}`;
-    }
+  const token = getToken();
+  if (token) {
+    headers['Authorization'] = `Bearer ${token}`;
+  }
 
-    const options = {
-        method,
-        headers
-    };
+  const options = {
+    method,
+    headers,
+  };
 
-    if (body) {
-        options.body = JSON.stringify(body);
-    }
+  if (body) {
+    options.body = JSON.stringify(body);
+  }
 
-    const res = await fetch(`${API_URL}${endpoint}`, options);
-    const data = await res.json().catch(() => ({}));
+  const res = await fetch(`${API_URL}${endpoint}`, options);
+  const data = await res.json().catch(() => ({}));
 
-    if (!res.ok) {
-        throw new Error(data.message || 'Something went wrong');
-    }
+  if (!res.ok) {
+    throw new Error(data.message || 'Something went wrong');
+  }
 
-    return data;
+  return data;
 }
