@@ -62,7 +62,7 @@ async function loadExpenses(query = '') {
         tbody.innerHTML = '';
 
         if (expenses.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;">No expenses found</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">No expenses found</td></tr>';
             document.getElementById('total-count').textContent = '0';
             return;
         }
@@ -74,6 +74,7 @@ async function loadExpenses(query = '') {
                 <td>${exp.description || '-'}</td>
                 <td>${exp.category_name || 'Uncategorized'}</td>
                 <td>${formatMoney(exp.amount)}</td>
+                <td>${exp.payment_method || 'Cash'}</td>
                 <td>
                     <button class="delete-btn" onclick="deleteExpense(${exp.id})">Delete</button>
                 </td>
@@ -89,13 +90,14 @@ async function loadExpenses(query = '') {
 }
 
 // Add Expense
-document.getElementById('expense-form').addEventListener('submit', async (e) => {
+document.getElementById('expense-form').addEventListener('submit', async(e) => {
     e.preventDefault();
 
     const amount = document.getElementById('amount').value.trim();
     const description = document.getElementById('description').value.trim();
     const date = document.getElementById('date').value;
     const category_id = document.getElementById('category').value || null;
+    const payment_method = document.getElementById('payment-method').value;
 
     if (!amount) {
         alert('Amount is required');
@@ -121,7 +123,8 @@ document.getElementById('expense-form').addEventListener('submit', async (e) => 
         amount: Number(amount),
         description: description || null,
         date,
-        category_id
+        category_id,
+        payment_method
     };
 
     try {

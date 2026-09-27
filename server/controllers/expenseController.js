@@ -54,7 +54,7 @@ exports.getExpenses = (req, res) => {
 // Add Expense
 exports.addExpense = (req, res) => {
     const userId = req.user.id;
-    const { amount, description, date, category_id } = req.body;
+    const { amount, description, date, category_id, payment_method } = req.body;
 
     if (amount === undefined || amount === null || amount === '') {
         return res.status(400).json({ message: 'Amount is required' });
@@ -69,12 +69,12 @@ exports.addExpense = (req, res) => {
     }
 
     const sql = `
-        INSERT INTO expenses (amount, description, date, category_id, user_id) 
-        VALUES ($1, $2, $3, $4, $5) 
+        INSERT INTO expenses (amount, description, date, category_id, user_id, payment_method) 
+        VALUES ($1, $2, $3, $4, $5, $6) 
         RETURNING id
     `;
 
-    db.query(sql, [amount, description || null, date, category_id || null, userId], (err, result) => {
+    db.query(sql, [amount, description || null, date, category_id || null, userId, payment_method || 'Cash'], (err, result) => {
         if (err) {
             console.log('Add Expense Error:', err);
             return res.status(500).json({ message: 'Failed to add expense', error: err.message });
@@ -87,15 +87,15 @@ exports.addExpense = (req, res) => {
 exports.updateExpense = (req, res) => {
     const userId = req.user.id;
     const expenseId = req.params.id;
-    const { amount, description, date, category_id } = req.body;
+    const { amount, description, date, category_id, payment_method } = req.body;
 
     const sql = `
         UPDATE expenses 
-        SET amount = $1, description = $2, date = $3, category_id = $4
-        WHERE id = $5 AND user_id = $6
+        SET amount = $1, description = $2, date = $3, category_id = $4, payment_method = $5
+        WHERE id = $6 AND user_id = $7
     `;
 
-    db.query(sql, [amount, description, date, category_id, expenseId, userId], (err, result) => {
+    db.query(sql, [amount, description, date, category_id, payment_method || 'Cash', expenseId, userId], (err, result) => {
         if (err) return res.status(500).json({ message: 'Failed to update expense' });
         if (result.rowCount === 0) {
             return res.status(404).json({ message: 'Expense not found or not authorized' });

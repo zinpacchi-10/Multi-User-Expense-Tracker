@@ -15,7 +15,8 @@ document.getElementById('avatarInput').addEventListener('change', async e => {
       return;
     }
 
-    document.getElementById('avatarImg').src = 'http://127.0.0.1:5000' + data.avatar_url;
+    document.getElementById('avatarImg').src =
+      'http://127.0.0.1:5000' + data.avatar_url;
   } catch (err) {
     console.error(err);
     alert('Something went wrong uploading avatar');
