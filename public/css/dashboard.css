@@ -10,7 +10,9 @@ body {
     color: #333;
 }
 
+
 /* Navbar */
+
 .navbar {
     background: #667eea;
     color: white;
@@ -18,7 +20,7 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
 .logo {
@@ -45,14 +47,18 @@ body {
     background: #e84118;
 }
 
+
 /* Container */
+
 .container {
     max-width: 1100px;
     margin: 30px auto;
     padding: 0 20px;
 }
 
+
 /* Summary Cards */
+
 .summary-cards {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -64,7 +70,7 @@ body {
     background: white;
     padding: 25px;
     border-radius: 12px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
     text-align: center;
 }
 
@@ -80,12 +86,14 @@ body {
     color: #667eea;
 }
 
+
 /* Section */
+
 .section {
     background: white;
     padding: 25px;
     border-radius: 12px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
     margin-bottom: 25px;
 }
 
@@ -95,14 +103,18 @@ body {
     color: #333;
 }
 
+
 /* Forms */
-.form-grid, .filter-grid {
+
+.form-grid,
+.filter-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
     gap: 12px;
 }
 
-input, select {
+input,
+select {
     padding: 11px 14px;
     border: 1px solid #ddd;
     border-radius: 8px;
@@ -110,7 +122,8 @@ input, select {
     outline: none;
 }
 
-input:focus, select:focus {
+input:focus,
+select:focus {
     border-color: #667eea;
 }
 
@@ -137,7 +150,9 @@ button:hover {
     background: #7f8c8d;
 }
 
+
 /* Table */
+
 .table-responsive {
     overflow-x: auto;
 }
@@ -147,7 +162,8 @@ table {
     border-collapse: collapse;
 }
 
-th, td {
+th,
+td {
     padding: 12px 15px;
     text-align: left;
     border-bottom: 1px solid #eee;
@@ -173,7 +189,9 @@ tr:hover {
     background: #e84118;
 }
 
+
 /* Category */
+
 .category-form {
     display: flex;
     gap: 10px;
@@ -195,6 +213,7 @@ tr:hover {
     padding: 10px 0;
     border-bottom: 1px solid #eee;
 }
+
 #currencySelect {
     padding: 6px 10px;
     border-radius: 6px;
@@ -210,4 +229,11 @@ tr:hover {
     display: flex;
     align-items: center;
     gap: 10px;
+}
+
+.avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    object-fit: cover;
 }
